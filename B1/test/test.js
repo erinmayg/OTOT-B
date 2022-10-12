@@ -15,8 +15,8 @@ describe('Genshin Characters', () => {
           err && console.log(err);
           chai.expect(res).to.have.status(200);
           chai.expect(res.body).to.be.a('object');
-          done();
         });
+      done();
     });
   });
 
@@ -41,8 +41,8 @@ describe('Genshin Characters', () => {
           err && console.log(err);
           chai.expect(res).to.have.status(201);
           chai.expect(res.body).to.shallowDeepEqual(expectedBody);
-          done();
         });
+      done();
     });
 
     it('should not create a new character', (done) => {
@@ -63,8 +63,8 @@ describe('Genshin Characters', () => {
           err && console.log(err);
           chai.expect(res).to.have.status(400);
           chai.expect(res.body).to.deep.equal(expectedBody);
-          done();
         });
+      done();
     });
   });
 
@@ -88,8 +88,8 @@ describe('Genshin Characters', () => {
           err && console.log(err);
           chai.expect(res).to.have.status(200);
           chai.expect(res.body).to.shallowDeepEqual(expectedBody);
-          done();
         });
+      done();
     });
 
     it('should not get an non-existent character', (done) => {
@@ -108,8 +108,8 @@ describe('Genshin Characters', () => {
           err && console.log(err);
           chai.expect(res).to.have.status(404);
           chai.expect(res.body).to.deep.equal(expectedBody);
-          done();
         });
+      done();
     });
   });
 
@@ -135,8 +135,8 @@ describe('Genshin Characters', () => {
           err && console.log(err);
           chai.expect(res).to.have.status(200);
           chai.expect(res.body).to.shallowDeepEqual(expectedBody);
-          done();
         });
+      done();
     });
 
     it('should not update an non-existent character', (done) => {
@@ -157,8 +157,8 @@ describe('Genshin Characters', () => {
           err && console.log(err);
           chai.expect(res).to.have.status(400);
           chai.expect(res.body).to.deep.equal(expectedBody);
-          done();
         });
+      done();
     });
   });
 
@@ -183,8 +183,8 @@ describe('Genshin Characters', () => {
           err && console.log(err);
           chai.expect(res).to.have.status(200);
           chai.expect(res.body).to.shallowDeepEqual(expectedBody);
-          done();
         });
+      done();
     });
 
     it('should not delete a non-existent character', (done) => {
@@ -204,8 +204,8 @@ describe('Genshin Characters', () => {
           err && console.log(err);
           chai.expect(res).to.have.status(400);
           chai.expect(res.body).to.deep.equal(expectedBody);
-          done();
         });
+      done();
     });
   });
 });
