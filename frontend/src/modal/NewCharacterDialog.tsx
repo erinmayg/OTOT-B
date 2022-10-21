@@ -1,9 +1,15 @@
 import React, { FormEvent } from 'react';
-import Dialog from '../components/Dialog';
+import {
+  Button,
+  Dialog,
+  Select,
+  MenuItem,
+  Stack,
+  TextField,
+  Typography,
+} from '@mui/material';
 import { APIReq } from '../utils/api-request';
-
-const weapons = ['Sword', 'Catalyst', 'Polearm', 'Bow', 'Claymore'];
-const elements = ['Anemo', 'Pyro', 'Geo', 'Hydro', 'Dendro', 'Cryo', 'Electro'];
+import { WEAPONS, ELEMENTS } from '../Character.d';
 
 function NewCharacterDialog(props: { open: boolean; close: VoidFunction }) {
   const { open, close } = props;
@@ -45,39 +51,30 @@ function NewCharacterDialog(props: { open: boolean; close: VoidFunction }) {
         }}
         onSubmit={handleSubmit}
       >
-        <h1>New Character</h1>
-        <label>
-          Character Name: <input name='name' />
-        </label>
-        <br />
-        <label>
-          Weapon:{' '}
-          <select name='weapon'>
-            {weapons.map((weapon, i) => (
-              <option value={weapon} key={i}>
+        <Stack spacing={2}>
+          <Typography variant='h5'>Create New Character!</Typography>
+          <TextField name='name' label='Character Name' />
+          <Select name='weapon' label='Weapon' defaultValue={WEAPONS[0]}>
+            {WEAPONS.map((weapon, i) => (
+              <MenuItem value={weapon} key={i}>
                 {weapon}
-              </option>
+              </MenuItem>
             ))}
-          </select>
-        </label>
-        <br />
-        <label>
-          Element:{' '}
-          <select name='element'>
-            {elements.map((element, i) => (
-              <option value={element} key={i}>
+          </Select>
+          <Select name='element' label='Element' defaultValue={ELEMENTS[0]}>
+            {ELEMENTS.map((element, i) => (
+              <MenuItem value={element} key={i}>
                 {element}
-              </option>
+              </MenuItem>
             ))}
-          </select>
-        </label>
-        <br />
-        <input
-          type='submit'
-          value='Submit'
-          style={{ display: 'flex', alignSelf: 'flex-end' }}
-        />
-        <button onClick={close}>Cancel</button>
+          </Select>
+          <Stack spacing={2} direction='row-reverse' alignItems='flex-end'>
+            <Button type='submit' variant='contained'>
+              Create Character!
+            </Button>
+            <Button onClick={close}>Cancel</Button>
+          </Stack>
+        </Stack>
       </form>
     </Dialog>
   );

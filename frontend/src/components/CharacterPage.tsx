@@ -1,10 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, { Dispatch, useEffect, useState } from 'react';
 import { CharacterModel, defaultCharacter } from '../Character.d';
+import { Box, Button, Stack, Typography } from '@mui/material';
 import EditCharacterDialog from '../modal/EditCharacterDialog';
 import { APIReq } from '../utils/api-request';
 
-function CharacterPage(props: { character: CharacterModel }) {
-  const [character, setCharacter] = useState(props.character);
+function CharacterPage(props: {
+  character: CharacterModel;
+  setCharacter: Dispatch<CharacterModel>;
+}) {
+  const { character, setCharacter } = props;
   const [exists, setExists] = useState(true);
   const [openEditCharacter, setOpenEditCharacter] = useState(false);
 
@@ -22,24 +26,33 @@ function CharacterPage(props: { character: CharacterModel }) {
   const { name, weapon, element } = character;
 
   return (
-    <div>
-      <h1>{name}</h1>
-      <p>Weapon: {weapon}</p>
-      <p>Element: {element}</p>
+    <Box>
+      <Stack spacing={2}>
+        <Typography variant='h4'>{name}</Typography>
+        <Typography>Weapon: {weapon}</Typography>
+        <Typography>Element: {element}</Typography>
 
-      {exists && (
-        <>
-          <button onClick={() => deleteCharacter(name)}>Delete</button>
-          <button onClick={() => setOpenEditCharacter(true)}>Edit Info</button>
-        </>
-      )}
-      <EditCharacterDialog
-        open={openEditCharacter}
-        close={() => setOpenEditCharacter(false)}
-        updateCharacter={(updated: CharacterModel) => setCharacter(updated)}
-        character={character}
-      />
-    </div>
+        {exists && (
+          <Stack direction='row' spacing={2}>
+            <Button color='error' onClick={() => deleteCharacter(name)}>
+              Delete
+            </Button>
+            <Button
+              onClick={() => setOpenEditCharacter(true)}
+              variant='outlined'
+            >
+              Edit Info
+            </Button>
+          </Stack>
+        )}
+        <EditCharacterDialog
+          open={openEditCharacter}
+          close={() => setOpenEditCharacter(false)}
+          updateCharacter={(updated: CharacterModel) => setCharacter(updated)}
+          character={character}
+        />
+      </Stack>
+    </Box>
   );
 }
 

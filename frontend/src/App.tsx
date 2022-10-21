@@ -1,59 +1,78 @@
-import axios from 'axios';
-import React, { useState } from 'react';
-import './App.css';
+import React, { FormEvent, useState } from 'react';
+import {
+  Box,
+  Button,
+  IconButton,
+  InputAdornment,
+  Stack,
+  TextField,
+  Typography,
+} from '@mui/material';
+import { SearchRounded } from '@mui/icons-material';
 import { CharacterModel, defaultCharacter } from './Character.d';
 import CharacterPage from './components/CharacterPage';
 import NewCharacterDialog from './modal/NewCharacterDialog';
 import { APIReq } from './utils/api-request';
 
 function App() {
-  const [character, setCharacter] = useState<CharacterModel | null>();
+  const [currCharacter, setCharacter] = useState<CharacterModel>();
   const [openNewCharacter, setOpenNewCharacter] = useState(false);
 
-  const fetchCharacterData = async (name: string) => {
-    const { status, data } = await APIReq.search(name);
-    const { message, data: character } = data;
+  const fetchCharacterData = (name: string) =>
+    APIReq.search(name).then(({ status, data }) => {
+      if (status === 404) {
+        setCharacter(defaultCharacter);
+        return;
+      }
 
-    if (status == 404) {
-      setCharacter(defaultCharacter);
-      return;
-    }
+      const { message, data: character } = data;
+      console.log(message);
+      setCharacter(character);
+    });
 
-    setCharacter(character);
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    console.log('Submit');
+    const data = new FormData(e.currentTarget);
+    const name = data.get('character');
+    name && fetchCharacterData(name.toString());
   };
 
   return (
-    <div className='App' style={{ minHeight: '100vh' }}>
-      <h1>Genshin Impact</h1>
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          const data = new FormData(e.currentTarget);
-          const character = data.get('character');
-          character && fetchCharacterData(character.toString());
-        }}
-      >
-        <input
-          placeholder='Search for Genshin Characters'
-          style={{
-            padding: '0.8rem 1rem',
-            borderRadius: '16px',
-            border: '1px solid grey',
-            width: '500px',
-          }}
-          type='text'
-          name='character'
+    <Box className='App'>
+      <Stack spacing={2} mx={2} alignItems='center'>
+        <Typography variant='h3'>Genshin Impact</Typography>
+        <form onSubmit={handleSubmit}>
+          <TextField
+            fullWidth
+            placeholder='Search in Teyvat'
+            name='character'
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position='start'>
+                  <IconButton type='submit'>
+                    <SearchRounded />
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
+          />
+        </form>
+        <Button onClick={() => setOpenNewCharacter(true)} variant='outlined'>
+          Create New Character!
+        </Button>
+        {currCharacter && (
+          <CharacterPage
+            character={currCharacter}
+            setCharacter={setCharacter}
+          />
+        )}
+        <NewCharacterDialog
+          open={openNewCharacter}
+          close={() => setOpenNewCharacter(false)}
         />
-      </form>
-      <button onClick={() => setOpenNewCharacter(true)}>
-        Create New Character!
-      </button>
-      {character && <CharacterPage character={character} />}
-      <NewCharacterDialog
-        open={openNewCharacter}
-        close={() => setOpenNewCharacter(false)}
-      />
-    </div>
+      </Stack>
+    </Box>
   );
 }
 

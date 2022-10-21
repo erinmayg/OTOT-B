@@ -10,4 +10,15 @@ export const defaultCharacter = {
   element: '???',
 };
 
+export const WEAPONS = ['Sword', 'Catalyst', 'Polearm', 'Bow', 'Claymore'];
+export const ELEMENTS = [
+  'Anemo',
+  'Pyro',
+  'Geo',
+  'Hydro',
+  'Dendro',
+  'Cryo',
+  'Electro',
+];
+
 export default CharacterModel;

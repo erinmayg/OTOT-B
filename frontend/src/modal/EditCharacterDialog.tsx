@@ -1,10 +1,15 @@
 import React, { FormEvent } from 'react';
-import CharacterModel from '../Character';
-import Dialog from '../components/Dialog';
+import { CharacterModel, WEAPONS, ELEMENTS } from '../Character.d';
+import {
+  Button,
+  Dialog,
+  MenuItem,
+  Select,
+  Stack,
+  TextField,
+  Typography,
+} from '@mui/material';
 import { APIReq } from '../utils/api-request';
-
-const weapons = ['Sword', 'Catalyst', 'Polearm', 'Bow', 'Claymore'];
-const elements = ['Anemo', 'Pyro', 'Geo', 'Hydro', 'Dendro', 'Cryo', 'Electro'];
 
 function EditCharacterDialog(props: {
   open: boolean;
@@ -52,39 +57,39 @@ function EditCharacterDialog(props: {
         }}
         onSubmit={handleSubmit}
       >
-        <h1>New Character</h1>
-        <label>
-          Character Name: <input name='name' defaultValue={character.name} />
-        </label>
-        <br />
-        <label>
-          Weapon:{' '}
-          <select name='weapon' defaultValue={character.weapon}>
-            {weapons.map((weapon, i) => (
-              <option value={weapon} key={i}>
+        <Stack spacing={2}>
+          <Typography variant='h5'>Edit Character</Typography>
+          <TextField
+            name='name'
+            label='Character Name'
+            defaultValue={character.name}
+          />
+
+          <Select name='weapon' label='Weapon' defaultValue={character.weapon}>
+            {WEAPONS.map((weapon, i) => (
+              <MenuItem value={weapon} key={i}>
                 {weapon}
-              </option>
+              </MenuItem>
             ))}
-          </select>
-        </label>
-        <br />
-        <label>
-          Element:{' '}
-          <select name='element' defaultValue={character.element}>
-            {elements.map((element, i) => (
-              <option value={element} key={i}>
+          </Select>
+          <Select
+            name='element'
+            label='Element'
+            defaultValue={character.element}
+          >
+            {ELEMENTS.map((element, i) => (
+              <MenuItem value={element} key={i}>
                 {element}
-              </option>
+              </MenuItem>
             ))}
-          </select>
-        </label>
-        <br />
-        <input
-          type='submit'
-          value='Submit'
-          style={{ display: 'flex', alignSelf: 'flex-end' }}
-        />
-        <button onClick={close}>Cancel</button>
+          </Select>
+          <Stack direction='row-reverse' spacing={2}>
+            <Button variant='contained' type='submit'>
+              Edit Info
+            </Button>
+            <Button onClick={close}>Cancel</Button>
+          </Stack>
+        </Stack>
       </form>
     </Dialog>
   );
