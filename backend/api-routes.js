@@ -1,6 +1,9 @@
 import express from 'express';
 
-const router = express.Router();
+const router = express.Router().all((_, res) => {
+  res.setHeader('content-type', 'application/json');
+  res.setHeader('Access-Control-Allow-Origin', '*');
+});
 
 // Set default API response
 router.get('/', (req, res) =>

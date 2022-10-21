@@ -1,20 +1,18 @@
 // Imports
 import 'dotenv/config';
 import express from 'express';
-import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
 import router from './api-routes.js';
+import cors from 'cors';
 
 // Initialise the app
 let app = express();
 
 // Configure bodyparser to handle post requests
-app.use(
-  bodyParser.urlencoded({
-    extended: true,
-  })
-);
-app.use(bodyParser.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+app.use(cors()); // config cors so that front-end can use
+app.options('*', cors());
 
 // Setup MongoDB Connection
 mongoose.connect(process.env.MONGODB, {
