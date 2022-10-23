@@ -1,7 +1,14 @@
 import React from 'react';
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from 'react-router-dom';
 import { createTheme, ThemeProvider } from '@mui/material';
 import CharacterPage from './components/views/CharacterPage';
 import NUSModsPage from './components/views/NUSModsPage';
+import Navbar from './components/Navbar';
 
 const theme = createTheme({
   palette: { mode: 'dark' },
@@ -11,8 +18,14 @@ const theme = createTheme({
 function App() {
   return (
     <ThemeProvider theme={theme}>
-      {/* <CharacterPage /> */}
-      <NUSModsPage />
+      <Router>
+        <Navbar />
+        <Routes>
+          <Route path='/task-b3' element={<CharacterPage />} />
+          <Route path='/task-b4' element={<NUSModsPage />} />
+          <Route path='*' element={<Navigate replace to='/task-b3' />} />
+        </Routes>
+      </Router>
     </ThemeProvider>
   );
 }

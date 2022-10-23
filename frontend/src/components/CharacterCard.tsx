@@ -1,5 +1,5 @@
 import React, { Dispatch, useEffect, useState } from 'react';
-import { CharacterModel, defaultCharacter } from '../Character';
+import { CharacterModel, defaultCharacter } from '../Character.d';
 import {
   Box,
   Button,
