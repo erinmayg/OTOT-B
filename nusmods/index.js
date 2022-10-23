@@ -22,6 +22,7 @@ module.exports = async function (context, req) {
     // status: 200, /* Defaults to 200 */
     headers: {
       'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*',
     },
     body: modules,
   };
