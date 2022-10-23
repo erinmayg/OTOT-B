@@ -1,10 +1,18 @@
 import React, { Dispatch, useEffect, useState } from 'react';
-import { CharacterModel, defaultCharacter } from '../Character.d';
-import { Box, Button, Stack, Typography } from '@mui/material';
+import { CharacterModel, defaultCharacter } from '../Character';
+import {
+  Box,
+  Button,
+  IconButton,
+  Divider,
+  Stack,
+  Typography,
+} from '@mui/material';
+import { DeleteRounded, EditRounded } from '@mui/icons-material';
 import EditCharacterDialog from '../modal/EditCharacterDialog';
 import { APIReq } from '../utils/api-request';
 
-function CharacterPage(props: {
+function CharacterCard(props: {
   character: CharacterModel;
   setCharacter: Dispatch<CharacterModel>;
 }) {
@@ -26,23 +34,32 @@ function CharacterPage(props: {
   const { name, weapon, element } = character;
 
   return (
-    <Box>
+    <Box
+      style={{
+        background:
+          'linear-gradient(135deg, transparent, rgba(255, 255, 255, 0.5))',
+        backgroundSize: 'cover',
+        backdropFilter: 'blur(10px)',
+        boxShadow: '0 0 20px 0 rgba(0, 0, 0, 0.2)',
+        borderRadius: '20px',
+        padding: '2rem',
+        width: '100%',
+      }}
+    >
       <Stack spacing={2}>
         <Typography variant='h4'>{name}</Typography>
+        <Divider sx={{ border: '1px solid white', opacity: '0.5' }} />
         <Typography>Weapon: {weapon}</Typography>
         <Typography>Element: {element}</Typography>
 
         {exists && (
-          <Stack direction='row' spacing={2}>
-            <Button color='error' onClick={() => deleteCharacter(name)}>
-              Delete
-            </Button>
-            <Button
-              onClick={() => setOpenEditCharacter(true)}
-              variant='outlined'
-            >
-              Edit Info
-            </Button>
+          <Stack direction='row' spacing={1} justifyContent='flex-end'>
+            <IconButton color='error' onClick={() => deleteCharacter(name)}>
+              <DeleteRounded />
+            </IconButton>
+            <IconButton onClick={() => setOpenEditCharacter(true)}>
+              <EditRounded />
+            </IconButton>
           </Stack>
         )}
         <EditCharacterDialog
@@ -56,4 +73,4 @@ function CharacterPage(props: {
   );
 }
 
-export default CharacterPage;
+export default CharacterCard;
