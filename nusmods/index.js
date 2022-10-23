@@ -18,12 +18,15 @@ module.exports = async function (context, req) {
     modules = modules.filter((module) => module.department == department);
   }
 
+  let faculties = [...new Set(modules.map((module) => module.faculty))];
+  let departments = [...new Set(modules.map((module) => module.department))];
+
   context.res = {
     // status: 200, /* Defaults to 200 */
     headers: {
       'Content-Type': 'application/json',
       'Access-Control-Allow-Origin': '*',
     },
-    body: modules,
+    body: { faculties, departments, modules },
   };
 };
