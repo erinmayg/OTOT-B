@@ -1,4 +1,4 @@
-import { URL_CHARACTERS, URL_MODULES, URL_MODULES_DEV } from '../configs';
+import { URL_CHARACTERS, URL_MODULES } from '../configs';
 import axios, { AxiosResponse } from 'axios';
 import { CharacterModel } from '../models/Character';
 import Module from '../models/Module';
@@ -79,6 +79,6 @@ export const APIReq = {
       modules: Module[];
     }>
   > => {
-    return requests.getWithParams(URL_MODULES_DEV, '', { params: params });
+    return requests.getWithParams(URL_MODULES, '', { params: params });
   },
 };
