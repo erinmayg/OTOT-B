@@ -60,7 +60,7 @@ export const APIReq = {
     requests.get(URL_CHARACTERS, `/${name}`),
   create: (
     character: CharacterModel
-  ): Promise<API.Response<{ message: string }>> =>
+  ): Promise<API.Response<{ message: string; data?: CharacterModel }>> =>
     requests.post(URL_CHARACTERS, character),
   delete: (name: string): Promise<API.Response<{ message: string }>> =>
     requests.delete(URL_CHARACTERS, `/${name}`),
@@ -80,7 +80,6 @@ export const APIReq = {
       modules: Module[];
     }>
   > => {
-    console.log({ params: params });
     return requests
       .getWithParams(URL_MODULES, '', { params: params })
       .then((resp) => {

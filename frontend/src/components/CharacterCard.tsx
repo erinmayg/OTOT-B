@@ -1,16 +1,10 @@
 import React, { Dispatch, useEffect, useState } from 'react';
 import { CharacterModel, defaultCharacter } from '../Character.d';
-import {
-  Box,
-  Button,
-  IconButton,
-  Divider,
-  Stack,
-  Typography,
-} from '@mui/material';
+import { Box, IconButton, Divider, Stack, Typography } from '@mui/material';
 import { DeleteRounded, EditRounded } from '@mui/icons-material';
 import EditCharacterDialog from '../modal/EditCharacterDialog';
 import { APIReq } from '../utils/api-request';
+import { useSnackbar } from '../context/SnackbarContext';
 
 function CharacterCard(props: {
   character: CharacterModel;
@@ -20,14 +14,17 @@ function CharacterCard(props: {
   const [exists, setExists] = useState(true);
   const [openEditCharacter, setOpenEditCharacter] = useState(false);
 
-  const deleteCharacter = async (name: string) => {
-    const {
-      status,
-      data: { message },
-    } = await APIReq.delete(name);
-    console.log(message);
-    setCharacter(defaultCharacter);
-  };
+  const snackbar = useSnackbar();
+
+  const deleteCharacter = (name: string) =>
+    APIReq.delete(name)
+      .then(({ status, data: { message } }) => {
+        console.log(status, message);
+        status === 200
+          ? snackbar.setSuccess(message)
+          : snackbar.setError(message);
+      })
+      .then(() => setCharacter(defaultCharacter));
 
   useEffect(() => setExists(character !== defaultCharacter), [character]);
 
