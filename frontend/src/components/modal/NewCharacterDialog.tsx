@@ -8,8 +8,8 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { APIReq } from '../utils/api-request';
-import CharacterModel, { WEAPONS, ELEMENTS } from '../Character.d';
+import { APIReq } from '../../utils/api-request';
+import CharacterModel, { WEAPONS, ELEMENTS } from '../../models/Character.d';
 import { useSnackbar } from '../context/SnackbarContext';
 
 function NewCharacterDialog(props: {

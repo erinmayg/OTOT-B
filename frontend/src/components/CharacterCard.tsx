@@ -1,10 +1,10 @@
 import React, { Dispatch, useEffect, useState } from 'react';
-import { CharacterModel, defaultCharacter } from '../Character.d';
+import { CharacterModel, defaultCharacter } from '../models/Character.d';
 import { Box, IconButton, Divider, Stack, Typography } from '@mui/material';
 import { DeleteRounded, EditRounded } from '@mui/icons-material';
-import EditCharacterDialog from '../modal/EditCharacterDialog';
+import EditCharacterDialog from './modal/EditCharacterDialog';
 import { APIReq } from '../utils/api-request';
-import { useSnackbar } from '../context/SnackbarContext';
+import { useSnackbar } from './context/SnackbarContext';
 
 function CharacterCard(props: {
   character: CharacterModel;

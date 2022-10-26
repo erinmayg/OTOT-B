@@ -1,7 +1,7 @@
 import { URL_CHARACTERS, URL_MODULES } from '../configs';
 import axios, { AxiosResponse } from 'axios';
-import { CharacterModel } from '../Character';
-import Module from '../Module';
+import { CharacterModel } from '../models/Character';
+import Module from '../models/Module';
 
 declare namespace API {
   type Response<T> = {

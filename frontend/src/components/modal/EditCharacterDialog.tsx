@@ -4,7 +4,7 @@ import {
   WEAPONS,
   ELEMENTS,
   defaultCharacter,
-} from '../Character.d';
+} from '../../models/Character.d';
 import {
   Button,
   Dialog,
@@ -14,7 +14,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { APIReq } from '../utils/api-request';
+import { APIReq } from '../../utils/api-request';
 import { useSnackbar } from '../context/SnackbarContext';
 
 function EditCharacterDialog(props: {
