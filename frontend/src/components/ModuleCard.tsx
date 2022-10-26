@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, Typography } from '@mui/material';
-import Module from '../Module';
+import Module from '../models/Module';
 
 function ModuleCard(props: { module: Module }) {
   const { moduleCode, title, description, department, faculty, moduleCredit } =
