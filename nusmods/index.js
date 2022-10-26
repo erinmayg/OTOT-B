@@ -11,19 +11,24 @@ module.exports = async function (context, req) {
     .get(`https://api.nusmods.com/v2/${AY}/moduleInfo.json`)
     .then((res) => res.data);
 
-  if (faculty) {
-    modules = modules.filter((module) => module.faculty == faculty);
-  }
-
-  if (department) {
-    modules = modules.filter((module) => module.department == department);
-  }
-
   let faculties = [...new Set(modules.map((module) => module.faculty))];
   let departments = [...new Set(modules.map((module) => module.department))];
 
-  pages = Math.ceil(modules.length / 8);
-  modules = modules.splice(8 * (page - 1), 8 * page);
+  if (faculty) {
+    modules = modules.filter((module) => faculty.includes(module.faculty));
+    departments = [...new Set(modules.map(({ department }) => department))];
+  }
+
+  if (department) {
+    modules = modules.filter((module) =>
+      department.includes(module.department)
+    );
+    faculties = [...new Set(modules.map(({ faculty }) => faculty))];
+  }
+
+  const resultsPerPage = 8;
+  pages = Math.ceil(modules.length / resultsPerPage);
+  modules = modules.splice(resultsPerPage * (page - 1), resultsPerPage * page);
 
   context.res = {
     // status: 200, /* Defaults to 200 */
