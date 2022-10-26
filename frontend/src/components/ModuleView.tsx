@@ -1,19 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Box, CircularProgress } from '@mui/material';
 import ModuleCard from './ModuleCard';
-import { PageIndicator } from './PageIndicator';
 import ModuleModel from '../models/Module';
 
-function ModuleView(props: {
-  modules: ModuleModel[];
-  pageState: { page: number; setPage: (page: number) => void };
-  maxPage: number;
-}) {
-  const {
-    modules,
-    pageState: { page, setPage },
-    maxPage,
-  } = props;
+function ModuleView(props: { modules: ModuleModel[] }) {
+  const { modules } = props;
 
   return modules.length === 0 ? (
     <Box
@@ -33,7 +24,6 @@ function ModuleView(props: {
       {modules.map((module, i) => (
         <ModuleCard module={module} key={i} />
       ))}
-      <PageIndicator currPage={page} maxPage={maxPage} setPage={setPage} />
     </Box>
   );
 }

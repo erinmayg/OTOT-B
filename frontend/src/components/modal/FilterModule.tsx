@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Autocomplete, Stack, TextField, Typography } from '@mui/material';
 import { APIReq } from '../../utils/api-request';
 import ModuleModel from '../../models/Module';
+import PageIndicator from '../PageIndicator';
 
 interface FilterParams {
   faculty?: string;
@@ -12,9 +13,10 @@ interface FilterParams {
 function FilterModule(props: {
   faculties: string[];
   departments: string[];
+  maxPage: number;
   setModules: (modules: ModuleModel[]) => void;
 }) {
-  const { setModules } = props;
+  const { setModules, maxPage } = props;
   const [faculties, setFaculties] = useState<string[]>(props.faculties);
   const [departments, setDepartments] = useState<string[]>(props.departments);
   const [filters, setFilters] = useState<FilterParams>({});
@@ -45,22 +47,19 @@ function FilterModule(props: {
         <Autocomplete
           multiple
           filterSelectedOptions
-          onChange={(_, v) => setFilters({ ...filters, faculty: v.join(',') })}
+          onChange={(_, v) =>
+            setFilters({ ...filters, page: 1, faculty: v.join(',') })
+          }
           options={faculties}
           renderInput={(faculty) => (
-            <TextField
-              {...faculty}
-              label='Faculty'
-              name='faculty'
-              SelectProps={{ multiple: true, defaultValue: [] }}
-            />
+            <TextField {...faculty} label='Faculty' name='faculty' />
           )}
         />
         <Autocomplete
           multiple
           filterSelectedOptions
           onChange={(_, v) =>
-            setFilters({ ...filters, department: v.join(',') })
+            setFilters({ ...filters, page: 1, department: v.join(',') })
           }
           options={departments}
           renderInput={(department) => (
@@ -68,6 +67,11 @@ function FilterModule(props: {
           )}
         />
       </Stack>
+      <PageIndicator
+        currPage={filters.page || 1}
+        maxPage={maxPage}
+        updatePage={(page) => setFilters({ ...filters, page })}
+      />
     </form>
   );
 }

@@ -8,7 +8,6 @@ import FilterModule from '../modal/FilterModule';
 
 function NUSModsPage() {
   const [maxPage, setMaxPage] = useState(1);
-  const [page, setPage] = useState(1);
   const [modules, setModules] = useState<Module[]>([]);
 
   const [faculties, setFaculties] = useState<string[]>([]);
@@ -53,8 +52,9 @@ function NUSModsPage() {
           setModules={setModules}
           faculties={faculties}
           departments={departments}
+          maxPage={maxPage}
         />
-        <ModuleView modules={modules} pageState={{page, setPage}} maxPage={maxPage} />
+        <ModuleView modules={modules} />
       </Stack>
     </Box>
   );
