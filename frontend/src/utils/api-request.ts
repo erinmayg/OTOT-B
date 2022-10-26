@@ -1,4 +1,4 @@
-import { URL_CHARACTERS, URL_MODULES } from '../configs';
+import { URL_CHARACTERS, URL_MODULES, URL_MODULES_DEV } from '../configs';
 import axios, { AxiosResponse } from 'axios';
 import { CharacterModel } from '../models/Character';
 import Module from '../models/Module';
@@ -70,7 +70,6 @@ export const APIReq = {
   ): Promise<API.Response<{ message: string; data: CharacterModel }>> =>
     requests.put(URL_CHARACTERS, `/${name}`, updatedCharacter),
   getModules: (
-    page: number = 1,
     params?: Object
   ): Promise<
     API.Response<{
@@ -80,12 +79,6 @@ export const APIReq = {
       modules: Module[];
     }>
   > => {
-    return requests
-      .getWithParams(URL_MODULES, '', { params: params })
-      .then((resp) => {
-        resp.data.pages = Math.ceil(resp.data.modules.length / 8);
-        resp.data.modules = resp.data.modules.splice(8 * (page - 1), 8 * page);
-        return resp;
-      });
+    return requests.getWithParams(URL_MODULES_DEV, '', { params: params });
   },
 };
