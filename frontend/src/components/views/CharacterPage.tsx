@@ -8,26 +8,26 @@ import {
   TextField,
 } from '@mui/material';
 import { SearchRounded } from '@mui/icons-material';
-import { CharacterModel, defaultCharacter } from '../../Character.d';
+import { CharacterModel } from '../../models/Character';
 import CharacterCard from '../CharacterCard';
-import NewCharacterDialog from '../../modal/NewCharacterDialog';
+import NewCharacterDialog from '../modal/NewCharacterDialog';
 import { APIReq } from '../../utils/api-request';
-import { GenshinLogo } from '../../icons/GenshinImpact';
+import { GenshinLogo } from '../icons/GenshinImpact';
+import { useSnackbar } from '../context/SnackbarContext';
 
 function CharacterPage() {
   const [currCharacter, setCharacter] = useState<CharacterModel>();
   const [openNewCharacter, setOpenNewCharacter] = useState(false);
 
+  const snackbar = useSnackbar();
+
   const fetchCharacterData = (name: string) =>
-    APIReq.search(name).then(({ status, data }) => {
+    APIReq.search(name).then(({ status, data: { message, data } }) => {
       if (status === 404) {
-        setCharacter(defaultCharacter);
+        snackbar.setError(message);
         return;
       }
-
-      const { message, data: character } = data;
-      console.log(message);
-      setCharacter(character);
+      setCharacter(data);
     });
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
@@ -111,7 +111,10 @@ function CharacterPage() {
         )}
         <NewCharacterDialog
           open={openNewCharacter}
-          close={() => setOpenNewCharacter(false)}
+          close={(character) => {
+            setOpenNewCharacter(false);
+            character && setCharacter(character);
+          }}
         />
       </Stack>
     </Box>

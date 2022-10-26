@@ -29,7 +29,11 @@ const newCharacter = (req, res) => {
 
   character.save((err) =>
     err
-      ? res.json(err)
+      ? err.code == '11000'
+        ? res
+            .status(400)
+            .json({ message: 'Character with same name already exists' })
+        : res.json(err)
       : res.status(201).json({
           message: 'New character created',
           data: character,
@@ -59,7 +63,7 @@ const updateCharacter = (req, res) => {
       err
         ? res.json(err)
         : character
-        ? res.json({ message: 'Character updated!', data: character })
+        ? res.json({ message: 'Character updated', data: character })
         : res.status(400).json({ message: 'Character not found' })
   );
 };

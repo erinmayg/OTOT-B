@@ -8,12 +8,18 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { APIReq } from '../utils/api-request';
-import { WEAPONS, ELEMENTS } from '../Character.d';
+import { APIReq } from '../../utils/api-request';
+import CharacterModel, { WEAPONS, ELEMENTS } from '../../models/Character.d';
+import { useSnackbar } from '../context/SnackbarContext';
 
-function NewCharacterDialog(props: { open: boolean; close: VoidFunction }) {
+function NewCharacterDialog(props: {
+  open: boolean;
+  close: (character?: CharacterModel) => void;
+}) {
   const { open, close } = props;
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+  const snackbar = useSnackbar();
+
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     const name = formData.get('name');
@@ -21,6 +27,7 @@ function NewCharacterDialog(props: { open: boolean; close: VoidFunction }) {
     const element = formData.get('element');
 
     if (!name || !weapon || !element) {
+      snackbar.setError('Missing fields');
       return;
     }
 
@@ -32,12 +39,15 @@ function NewCharacterDialog(props: { open: boolean; close: VoidFunction }) {
 
     console.log(newCharacter);
 
-    const {
-      status,
-      data: { message },
-    } = await APIReq.create(newCharacter);
-    console.log(message);
-    close();
+    APIReq.create(newCharacter)
+      .then(({ status, data: { message, data } }) => {
+        console.log(status, message);
+        status === 201
+          ? snackbar.setSuccess(message)
+          : snackbar.setError(message);
+        return data;
+      })
+      .then(close);
   };
 
   return (
@@ -53,15 +63,25 @@ function NewCharacterDialog(props: { open: boolean; close: VoidFunction }) {
       >
         <Stack spacing={2}>
           <Typography variant='h5'>Create New Character!</Typography>
-          <TextField name='name' label='Character Name' />
-          <Select name='weapon' label='Weapon' defaultValue={WEAPONS[0]}>
+          <TextField required name='name' label='Character Name' />
+          <Select
+            required
+            name='weapon'
+            label='Weapon'
+            defaultValue={WEAPONS[0]}
+          >
             {WEAPONS.map((weapon, i) => (
               <MenuItem value={weapon} key={i}>
                 {weapon}
               </MenuItem>
             ))}
           </Select>
-          <Select name='element' label='Element' defaultValue={ELEMENTS[0]}>
+          <Select
+            required
+            name='element'
+            label='Element'
+            defaultValue={ELEMENTS[0]}
+          >
             {ELEMENTS.map((element, i) => (
               <MenuItem value={element} key={i}>
                 {element}
@@ -72,7 +92,7 @@ function NewCharacterDialog(props: { open: boolean; close: VoidFunction }) {
             <Button type='submit' variant='contained'>
               Create Character!
             </Button>
-            <Button onClick={close}>Cancel</Button>
+            <Button onClick={() => close()}>Cancel</Button>
           </Stack>
         </Stack>
       </form>

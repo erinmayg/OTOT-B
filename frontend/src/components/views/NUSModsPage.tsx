@@ -12,8 +12,8 @@ import {
   ChevronLeftRounded as Back,
   ChevronRightRounded as Next,
 } from '@mui/icons-material';
-import { NUSModsLogo } from '../../icons/NUSMods';
-import Module from '../../Module';
+import { NUSModsLogo } from '../icons/NUSMods';
+import Module from '../../models/Module';
 import { APIReq } from '../../utils/api-request';
 import ModuleCard from '../ModuleCard';
 
@@ -71,13 +71,6 @@ function NUSModsPage() {
     getModules().catch(console.error);
   }, []);
 
-  const fetchFilteredModules = (params: FilterParams) => {
-    console.log(params);
-    APIReq.getModules(page, params).then(({ data: { modules } }) =>
-      setModules(modules)
-    );
-  };
-
   const handleFilter = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const data = new FormData(e.currentTarget);
@@ -90,7 +83,13 @@ function NUSModsPage() {
     console.log(filters);
   };
 
-  useEffect(() => fetchFilteredModules(filters), [filters, page]);
+  useEffect(() => {
+    const fetchFilteredModules = (params: FilterParams) =>
+      APIReq.getModules(page, params).then(({ data: { modules } }) =>
+        setModules(modules)
+      );
+    fetchFilteredModules(filters);
+  }, [filters, page]);
 
   return (
     <Box
@@ -101,7 +100,6 @@ function NUSModsPage() {
         flexDirection: 'column',
         color: 'primary',
         background: 'black',
-        // marginTop: '60px',
       }}
     >
       <Stack

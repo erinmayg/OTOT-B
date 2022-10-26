@@ -1,5 +1,10 @@
 import React, { FormEvent } from 'react';
-import { CharacterModel, WEAPONS, ELEMENTS } from '../Character.d';
+import {
+  CharacterModel,
+  WEAPONS,
+  ELEMENTS,
+  defaultCharacter,
+} from '../../models/Character.d';
 import {
   Button,
   Dialog,
@@ -9,7 +14,8 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { APIReq } from '../utils/api-request';
+import { APIReq } from '../../utils/api-request';
+import { useSnackbar } from '../context/SnackbarContext';
 
 function EditCharacterDialog(props: {
   open: boolean;
@@ -18,7 +24,9 @@ function EditCharacterDialog(props: {
   updateCharacter: (updated: CharacterModel) => void;
 }) {
   const { open, close, character, updateCharacter } = props;
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+  const snackbar = useSnackbar();
+
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     const name = formData.get('name');
@@ -26,6 +34,7 @@ function EditCharacterDialog(props: {
     const element = formData.get('element');
 
     if (!name && !weapon && !element) {
+      snackbar.setError('Fill out at least one field');
       return;
     }
 
@@ -35,15 +44,15 @@ function EditCharacterDialog(props: {
       element: element?.toString() || character.element,
     };
 
-    console.log(updatedCharacter);
+    APIReq.edit(character.name, updatedCharacter)
+      .then(({ status, data: { message, data: updated } }) => {
+        status === 200
+          ? snackbar.setSuccess(message)
+          : snackbar.setError(message);
 
-    const {
-      status,
-      data: { message, data: updated },
-    } = await APIReq.edit(character.name, updatedCharacter);
-    console.log(message);
-    updateCharacter(updated);
-    close();
+        updateCharacter(status === 200 ? updated : defaultCharacter);
+      })
+      .then(close);
   };
 
   return (

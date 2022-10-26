@@ -45,26 +45,54 @@ describe('Genshin Characters', () => {
       done();
     });
 
-    it('should not create a new character', (done) => {
-      // Missing element and weapon
-      const newCharacter = {
-        name: 'Qiqi',
-      };
+    describe('missing fields', () => {
+      it('should not create a new character', (done) => {
+        // Missing element and weapon
+        const newCharacter = {
+          name: 'Qiqi',
+        };
 
-      const expectedBody = {
-        message: 'Missing element, weapon',
-      };
+        const expectedBody = {
+          message: 'Missing element, weapon',
+        };
 
-      chai
-        .request(app)
-        .post('/api/characters')
-        .send(newCharacter)
-        .end((err, res) => {
-          err && console.log(err);
-          chai.expect(res).to.have.status(400);
-          chai.expect(res.body).to.deep.equal(expectedBody);
-        });
-      done();
+        chai
+          .request(app)
+          .post('/api/characters')
+          .send(newCharacter)
+          .end((err, res) => {
+            err && console.log(err);
+            chai.expect(res).to.have.status(400);
+            chai.expect(res.body).to.deep.equal(expectedBody);
+          });
+        done();
+      });
+    });
+
+    describe('duplicate name', () => {
+      it('should not create a new character', (done) => {
+        // Missing element and weapon
+        const newCharacter = {
+          name: 'Zhongli',
+          element: 'Anemo',
+          weapon: 'Sword',
+        };
+
+        const expectedBody = {
+          message: 'Character with same name already exists',
+        };
+
+        chai
+          .request(app)
+          .post('/api/characters')
+          .send(newCharacter)
+          .end((err, res) => {
+            err && console.log(err);
+            chai.expect(res).to.have.status(400);
+            chai.expect(res.body).to.deep.equal(expectedBody);
+          });
+        done();
+      });
     });
   });
 
@@ -123,7 +151,7 @@ describe('Genshin Characters', () => {
       };
 
       const expectedBody = {
-        message: 'Character updated!',
+        message: 'Character updated',
         data: updateCharacter,
       };
 
