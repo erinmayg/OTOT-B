@@ -6,12 +6,9 @@ const router = express.Router().all((_, res) => {
 });
 
 // Set default API response
-router.get('/', (req, res) =>
-  res.json({
-    message: 'API Successful',
-  })
-);
+router.get('/', (req, res) => res.json({ message: 'API Successful' }));
 
+// Character Routes
 import {
   index,
   newCharacter,
@@ -19,9 +16,10 @@ import {
   updateCharacter,
   deleteCharacter,
 } from './controller/character-controller.js';
+import { verifyAccess, verifyToken } from './middleware/authJwt.js';
 
-// Routes
-router.route('/characters').get(index).post(newCharacter);
+router.get('/characters', verifyToken, verifyAccess, index);
+router.post('/characters', newCharacter);
 
 router
   .route('/characters/:name')
@@ -29,6 +27,18 @@ router
   .patch(updateCharacter)
   .put(updateCharacter)
   .delete(deleteCharacter);
+
+// User Routes
+import {
+  createUser,
+  signIn,
+  loginWithToken,
+} from './controller/user-controller.js';
+
+router.post('/signup', createUser);
+router.post('/admin', (req, res) => createUser(req, res, true));
+router.post('/token-login', verifyToken, loginWithToken);
+router.post('/login', signIn);
 
 // Export API routes
 export default router;
