@@ -130,6 +130,8 @@ GitHub Link: [OTOT Task B](https://github.com/erinmayg/OTOT-B)
 
 2. It is also done through the CI in GitHub Actions triggered via a Pull Request or a Push to the `main` branch.
 
+   ![github-actions](B2-3.png)
+
 ## Task B2.2
 
 1. Access the deployed backend API through this [link](https://erinmayg-cs3219-otot-b.herokuapp.com/api/characters)
@@ -187,10 +189,10 @@ It should display the following website
 
 It displays all faculties, departments, and modules in NUS (retrieved via the [NUSMods API](https://api.nusmods.com/v2/)) in the AY 2022-2023 (set by default).
 
-And it is able to filter the modules via the department and/or faculties. It employs `AND` filtering (i.e. it needs to satisfy both the set params).
+And it is able to filter the modules via the department and/or faculties. It employs `AND` filtering between params, and `OR` filtering within it.
 
 A query example would be:
-`<azure_functions_link>&faculty=Computingdepartment=Computer%20Science`
+`<azure_functions_link>&faculty=Computing,Science`
 
 ### Frontend
 
