@@ -30,5 +30,9 @@ router
   .put(updateCharacter)
   .delete(deleteCharacter);
 
+import { modules } from './controller/module-controller.js';
+
+router.route('/nusmods').get(modules);
+
 // Export API routes
 export default router;
