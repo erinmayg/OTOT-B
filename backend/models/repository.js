@@ -25,7 +25,7 @@ export async function getUser({ username, password }) {
 }
 
 export async function getUserByUsername({ username }) {
-  const user = await UserModel.findOne({ username });
+  const user = await UserModel.findOne({ username }, 'username role');
   return user;
 }
 
