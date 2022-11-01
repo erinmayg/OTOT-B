@@ -16,13 +16,8 @@ import {
   updateCharacter,
   deleteCharacter,
 } from './controller/character-controller.js';
-import {
-  // verifyAccess,
-  verifyToken,
-  grantAccess,
-} from './middleware/authJwt.js';
 
-// router.get('/characters', verifyToken, verifyAccess, index);
+router.get('/characters', index);
 router.post('/characters', newCharacter);
 
 router
@@ -40,6 +35,7 @@ import {
   getUser,
   getUsers,
 } from './controller/user-controller.js';
+import { verifyToken, grantAccess } from './middleware/authJwt.js';
 
 router.get(
   '/:username',
