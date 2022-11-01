@@ -1,4 +1,19 @@
 import jwt from 'jsonwebtoken';
+import { roles } from '../roles.js';
+
+export function grantAccess(action, resource) {
+  return async (req, res, next) => {
+    try {
+      const permission = roles.can(req.role)[action](resource);
+      if (!permission.granted) {
+        return res.status(403).json({ message: 'Unauthorized access' });
+      }
+      next();
+    } catch (error) {
+      console.log(err);
+    }
+  };
+}
 
 export function verifyToken(req, res, next) {
   // Authenticate
@@ -7,19 +22,22 @@ export function verifyToken(req, res, next) {
   }
 
   try {
-    const username = req.query.username;
+    const uname = req.params.username;
     const token = req.headers.authorization.split(' ')[1];
-    const decoded = decodeToken(token, process.env.JWT_PRIVATE_KEY);
+    const { username, role, exp } = decodeToken(
+      token,
+      process.env.JWT_PRIVATE_KEY
+    );
 
-    if (username !== decoded.username) {
+    if (exp < Date.now().valueOf / 1000) {
+      return res.status(401).json({ message: 'JWT Token has expired' });
+    }
+
+    if (uname !== username) {
       return res.status(401).json({ message: 'User is not authenticated' });
     }
 
-    if (verifyAccess && !decoded.isAdmin) {
-      return res.status(403).json({ message: 'Unauthorized access' });
-    }
-
-    req.isAdmin = decoded.isAdmin;
+    req.role = role;
 
     next();
   } catch (err) {
@@ -28,16 +46,9 @@ export function verifyToken(req, res, next) {
   }
 }
 
-export function verifyAccess(req, res, next) {
-  if (!req.isAdmin) {
-    return res.status(403).json({ message: 'Unauthorized access' });
-  }
-  next();
-}
-
 export const isValidRequest = (req) => {
   return (
-    req.query.username &&
+    req.params.username &&
     req.headers &&
     req.headers.authorization &&
     req.headers.authorization.split(' ')[0] === 'Bearer'

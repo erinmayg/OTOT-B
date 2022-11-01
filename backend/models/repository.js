@@ -23,3 +23,13 @@ export async function getUser({ username, password }) {
     return user;
   }
 }
+
+export async function getUserByUsername({ username }) {
+  const user = await UserModel.findOne({ username });
+  return user;
+}
+
+export async function getAllUsers() {
+  const users = await UserModel.find({}, 'username role');
+  return users;
+}

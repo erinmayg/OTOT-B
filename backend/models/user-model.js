@@ -7,13 +7,14 @@ let UserModelSchema = new Schema({
     required: true,
     unique: true,
   },
-  isAdmin: {
-    type: Boolean,
-    required: true,
-  },
   password: {
     type: String,
     required: true,
+  },
+  role: {
+    type: String,
+    default: 'basic',
+    enum: ['basic', 'admin'],
   },
 });
 

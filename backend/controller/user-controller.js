@@ -1,11 +1,34 @@
 import {
   ormCreateUser as _createUser,
   ormGetUser as _getUser,
+  ormGetAllUsers as _getAllUsers,
+  ormGetUserByUsername as _getUserByUsername,
 } from '../models/user-orm.js';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
-export async function createUser(req, res, isAdmin = false) {
+export async function getUser(req, res) {
+  try {
+    const { username } = req.params;
+    const user = await _getUserByUsername(username);
+    if (!user) return res.status(404).json({ message: 'User does not exist' });
+    return res.status(200).json(user);
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+export async function getUsers(req, res) {
+  try {
+    const users = await _getAllUsers();
+    if (!users) return res.status(404).json({ message: 'No users found' });
+    return res.status(200).json(users);
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+export async function createUser(req, res, role) {
   try {
     const { username, password } = req.body;
     let saltRounds = parseInt(process.env.SALT_ROUNDS);
@@ -17,7 +40,7 @@ export async function createUser(req, res, isAdmin = false) {
     }
 
     const hashedPassword = await bcrypt.hash(password, saltRounds);
-    const resp = await _createUser(username, hashedPassword, isAdmin);
+    const resp = await _createUser(username, hashedPassword, role);
 
     if (!resp.err) {
       return res
@@ -29,6 +52,8 @@ export async function createUser(req, res, isAdmin = false) {
       return res.status(409).json({ message: 'Username already taken' });
     }
 
+    console.log(resp);
+    console.log(err);
     return res.status(400).json({ message: 'Failed to create user' });
   } catch (err) {
     return res
@@ -62,7 +87,7 @@ export async function signIn(req, res) {
 export async function generateToken(user) {
   let privateKey = process.env.JWT_PRIVATE_KEY;
   let token = jwt.sign(
-    { username: user.username, isAdmin: user.isAdmin },
+    { username: user.username, role: user.role },
     privateKey,
     { expiresIn: '1h' }
   );

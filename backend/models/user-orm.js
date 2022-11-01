@@ -1,14 +1,19 @@
-import { createUser, getUser } from './repository.js';
+import {
+  createUser,
+  getUser,
+  getUserByUsername,
+  getAllUsers,
+} from './repository.js';
 import 'dotenv/config';
 
 //need to separate orm functions from repository to decouple business logic from persistence
 
-export async function ormCreateUser(username, password, isAdmin) {
+export async function ormCreateUser(username, password, role) {
   try {
     const newUser = await createUser({
       username,
       password,
-      isAdmin: isAdmin || false,
+      role,
     });
     await newUser.save();
     return true;
@@ -25,6 +30,26 @@ export async function ormGetUser(username, password) {
     console.log(
       'ERROR: Could not get user from DB. Wrong username / password.'
     );
+    return { err };
+  }
+}
+
+export async function ormGetUserByUsername(username) {
+  try {
+    const user = await getUserByUsername({ username });
+    return user;
+  } catch (err) {
+    console.log('ERROR: Could not get user from DB.');
+    return { err };
+  }
+}
+
+export async function ormGetAllUsers() {
+  try {
+    const user = await getAllUsers();
+    return user;
+  } catch (err) {
+    console.log('ERROR: Could not get users from DB.');
     return { err };
   }
 }

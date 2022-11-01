@@ -16,9 +16,13 @@ import {
   updateCharacter,
   deleteCharacter,
 } from './controller/character-controller.js';
-import { verifyAccess, verifyToken } from './middleware/authJwt.js';
+import {
+  // verifyAccess,
+  verifyToken,
+  grantAccess,
+} from './middleware/authJwt.js';
 
-router.get('/characters', verifyToken, verifyAccess, index);
+// router.get('/characters', verifyToken, verifyAccess, index);
 router.post('/characters', newCharacter);
 
 router
@@ -33,10 +37,24 @@ import {
   createUser,
   signIn,
   loginWithToken,
+  getUser,
+  getUsers,
 } from './controller/user-controller.js';
 
-router.post('/signup', createUser);
-router.post('/admin', (req, res) => createUser(req, res, true));
+router.get(
+  '/:username',
+  verifyToken,
+  grantAccess('readOwn', 'profile'),
+  getUser
+);
+router.get(
+  '/:username/users',
+  verifyToken,
+  grantAccess('readAny', 'profile'),
+  getUsers
+);
+router.post('/signup', (req, res) => createUser(req, res, 'basic'));
+router.post('/admin', (req, res) => createUser(req, res, 'admin'));
 router.post('/token-login', verifyToken, loginWithToken);
 router.post('/login', signIn);
 
