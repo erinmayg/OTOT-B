@@ -1,8 +1,6 @@
-import axios from 'axios';
 import redis from 'redis';
 import 'dotenv/config';
-
-const URI_AZURE = process.env.URI_AZURE;
+import NUSMods from '../models/module-model.js';
 
 let redisClient;
 
@@ -15,7 +13,7 @@ const setupRedis = async () => {
 setupRedis();
 
 export const modules = async (req, res) => {
-  const { AY } = req.query;
+  const { AY } = req.params;
 
   let data;
   let isCached = false;
@@ -26,14 +24,14 @@ export const modules = async (req, res) => {
     if (cacheResults) {
       isCached = true;
       data = JSON.parse(cacheResults);
-    } else {
-      data = await axios
-        .get(URI_AZURE, { params: req.query })
-        .then(({ data }) => data);
-      await redisClient.set(AY, JSON.stringify(data));
+      return res.send({ isCached, data });
     }
 
-    res.send({ isCached, data });
+    NUSMods.findOne({ AY }, async (err, { modules }) => {
+      if (err) return res.send({ message: err });
+      await redisClient.set(AY, JSON.stringify(modules));
+      res.send({ isCached, data: modules });
+    });
   } catch (error) {
     res.status(400).json({ message: error });
   }
